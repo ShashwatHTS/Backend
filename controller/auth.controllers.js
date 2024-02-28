@@ -57,13 +57,13 @@ const getRegistered = async (req, res) => {
 
 const logInUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
     console.log(req.body)
-    if (email && password && username) {
+    if (email && password) {
       const logInService = logInGenerateAndStoreToken(req.body, res);
       if (logInService) {
         const decrypt_password = await supabase
-          .from("userInfo").select("password").eq("username", username)
+          .from("userInfo").select("password").eq("email", email)
         console.log("decrypt_password=>", decrypt_password?.data[0].password)
 
         const verifyPassword = await bcrypt.compare(password, decrypt_password?.data[0].password)
@@ -71,7 +71,7 @@ const logInUser = async (req, res) => {
         if (!verifyPassword) {
           res.send("invalid user")
         }
-        const { data, error } = await supabase.auth.signInWithPassword({ username, email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (data?.user) {
           // console.log("data=>", data?.user.id)
           const userResponse = await supabase
