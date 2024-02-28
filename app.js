@@ -18,7 +18,7 @@ app.set('view engine', 'jade');
 
 app.use(
   cors({
-    origin: 'https://backend-9h20.onrender.com',
+    origin: 'http://localhost:5173/',
     credentials: true,
   })
 );
