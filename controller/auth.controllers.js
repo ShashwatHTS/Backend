@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const getData = async (req, res) => {
   let { data, error } = await supabase
-    .from('userInfo')
+    .from('user_info')
     .select('*')
   if (error) {
     console.log(error)
@@ -36,9 +36,9 @@ const getRegistered = async (req, res) => {
     if (data?.user) {
       console.log("data=>", data.user)
 
-      const userResponse = await supabase.from('userInfo').insert({ auth_id: data.user.id, email, role, username, password: hash_password }).select();
+      const userResponse = await supabase.from('user_info').insert({ auth_id: data.user.id, email, role, username, password: hash_password }).select();
 
-      if (userResponse) {
+      if (userResponse.data) {
         console.log("userResponse => ", userResponse)
         res.send(userResponse.data)
 
@@ -63,7 +63,7 @@ const logInUser = async (req, res) => {
       const logInService = logInGenerateAndStoreToken(req.body, res);
       if (logInService) {
         const decrypt_password = await supabase
-          .from("userInfo").select("password").eq("email", email)
+          .from("user_info").select("password").eq("email", email)
         console.log("decrypt_password=>", decrypt_password?.data[0].password)
 
         const verifyPassword = await bcrypt.compare(password, decrypt_password?.data[0].password)
@@ -75,7 +75,7 @@ const logInUser = async (req, res) => {
         if (data?.user) {
           // console.log("data=>", data?.user.id)
           const userResponse = await supabase
-            .from('userInfo')
+            .from('user_info')
             .select("*")
             .eq('auth_id', data?.user.id)
             .select();
@@ -126,7 +126,7 @@ const logOutUser = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     console.log(".................", req.user.email)
-    const getUserData = await supabase.from('userInfo').select('id').eq('email', req.user.email)
+    const getUserData = await supabase.from('user_info').select('id').eq('email', req.user.email)
     console.log("bv=============== rv", getUserData.data[0].id)
     return getUserData.data[0].id
   } catch (error) {

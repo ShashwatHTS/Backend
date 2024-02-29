@@ -9,6 +9,7 @@ const cors = require('cors')
 var indexRouter = require('./routes/index');
 var todoRouter = require('./routes/todo.routes');
 var authRouter = require('./routes/auth.routes');
+var userRouter = require('./routes/user.routes');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/todo', todoRouter);
 app.use('/auth', authRouter);
+app.use('/user',userRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
