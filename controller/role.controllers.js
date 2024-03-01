@@ -1,18 +1,20 @@
-const { createClient } = require('@supabase/supabase-js');
-const { supabaseUrl, supabaseKey } = require('../db/index.js');
+const asyncHandler = require('express-async-handler')
+var { supabaseInstance } = require("../supabase-db/supabaseClient");
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+const RoleDatabase = require('../infrastructure/databases/roleDatabase.js');
+const { RoleService } = require('../application/roleService');
 
+const roleDatabase = new RoleDatabase(supabaseInstance);
+const roleService = new RoleService(roleDatabase);
 
-
-exports.getRole = async (req, res) => {
+exports.getRole = asyncHandler(async (req, res) => {
     try {
-        let { data, error } = await supabase.from('role').select("*");
-        if (data) {
+        const serviceResponse = await roleService.getRole();
+        if (serviceResponse.data) {
             return res.status(200).json({
                 success: true,
-                message: " list of roles",
-                list: data,
+                message: " get role successfully",
+                data: serviceResponse.data,
             });
         } else {
             return res.status(500).json({ success: false, message: error })
@@ -20,20 +22,18 @@ exports.getRole = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error })
     }
-}
+})
 
 exports.createAdminRole = async (req, res) => {
     try {
-        const { name, access } = req.body
-        let { data, error } = await supabase.from('role').insert({
-            name, access
-        }).select("*")
-        console.log("show", data)
-        if (data) {
+        const postBody = req.body
+        const serviceResponse = await roleService.createRole(postBody);
+
+        if (serviceResponse.data) {
             return res.status(200).json({
                 success: true,
-                message: "role created",
-                data: data,
+                message: "role created successfully",
+                data: serviceResponse.data,
             });
         } else {
             return res.status(500).json({ success: false, message: error })
@@ -45,20 +45,18 @@ exports.createAdminRole = async (req, res) => {
 
 exports.updateAdminRole = async (req, res) => {
     try {
-        const { name, access } = req.body
-        let { data, error } = await supabase.from('role').update({
-            name, access
-        }).eq("id", req.params.id).select("*").maybeSingle();
+        const postBody = req.body;
+        const id = req.params.id;
+        const serviceResponse = await roleService.updateRole(postBody, id);
 
-        if (data) {
+        if (serviceResponse.data) {
             return res.status(200).json({
                 success: true,
-                message: "role updated",
-                data: data,
+                message: "Role updated successfully",
+                data: serviceResponse.data,
             });
         } else {
             return res.status(500).json({ success: false, message: error })
-
         }
     } catch (error) {
         res.status(500).json({ success: false, message: error })
