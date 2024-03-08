@@ -1,20 +1,20 @@
-var { supabaseInstance } = require("../../supabase-db/supabaseClient.js");
+var { supabaseInstance } = require("../../../supabase-db/index.js");
 
-const UserDatabase = require('../../infrastructure/databases/userDatabase.js');
-const { UserService } = require('../../application/services/admin/userService.js');
+const AdminDatabase = require('../../../infrastructure/databases/adminDatabase.js');
+const { AdminService } = require('../../../application/services/admin/adminService');
 
-const userDatabase = new UserDatabase(supabaseInstance);
-const userService = new UserService(userDatabase);
+const adminDatabase = new AdminDatabase(supabaseInstance);
+const adminService = new AdminService(adminDatabase);
 
 
-exports.createUser = async (req, res) => {
+exports.createAdmin = async (req, res) => {
     try {
         const postBody = req.body
-        const serviceResponse = await userService.createUser(postBody);
+        const serviceResponse = await adminService.createAdmin(postBody);
         if (serviceResponse.data) {
             return res.status(200).json({
                 success: true,
-                message: " user created successfully",
+                message: " admin created successfully",
                 data: serviceResponse.data,
             });
         } else {
@@ -25,18 +25,16 @@ exports.createUser = async (req, res) => {
     }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateAdmin = async (req, res) => {
     try {
         const postBody = req.body;
         const id = req.params.id;
-        console.log("postBody", postBody)
-        const serviceResponse = await userService.updateUser(postBody, id);
-        console.log("serviceResponse", serviceResponse)
+        const serviceResponse = await adminService.updateAdmin(postBody, id);
 
         if (serviceResponse.data) {
             return res.status(200).json({
                 success: true,
-                message: " user updated successfully",
+                message: " admin updated successfully",
                 data: serviceResponse.data,
             });
         } else {
@@ -47,15 +45,15 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.getUsers = async (req, res) => {
+exports.getAdmins = async (req, res) => {
     try {
         const { page, limit } = req.query;
 
-        const serviceResponse = await userService.getUser(page, limit);
+        const serviceResponse = await adminService.getAdmin(page, limit);
         if (serviceResponse) {
             return res.status(200).json({
                 success: true,
-                message: "user list successfully",
+                message: "admin list successfully",
                 data: serviceResponse
             });
         } else {
@@ -65,9 +63,3 @@ exports.getUsers = async (req, res) => {
         res.status(500).json({ success: false, message: error })
     }
 }
-
-
-
-
-// var decrypted = cryptoJs.AES.decrypt("U2FsdGVkX19i5gFbP53Lb1jflUSTQuOXqH1sJvnZFH0=", secret).toString(cryptoJs.enc.Utf8);
-// console.log("------------------", decrypted)

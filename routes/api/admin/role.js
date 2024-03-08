@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { getRole, createAdminRole, updateAdminRole } = require('../../../controller/role.controllers');
+const { getRole, createAdminRole, updateAdminRole } = require('../../..//presentation/controller/role.controllers');
+const { roleValidateInput, updateRoleValidateInput } = require('../../../validator/role.validator');
 
 
-
-router.get('/list-role', getRole);
-router.post('/create-role', createAdminRole);
-router.post('/update-role/:id', updateAdminRole);
+router.get('/', getRole);
+router.post('/',roleValidateInput, createAdminRole);
+router.put('/:id',updateRoleValidateInput, updateAdminRole);
 
 
 module.exports = router;

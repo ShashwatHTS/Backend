@@ -8,8 +8,8 @@ class RoleDatabase {
     }
 
     async createRole(postBody) {
-        const role = await this.db.from(tableName).insert({ ...postBody }).select('*').maybeSingle();
-        
+        const role = await this.db.from(tableName).insert({ ...postBody }).select(`id,name,access`).maybeSingle();
+
         if (!role.data) {
             throw role?.error?.message;
         }
@@ -17,7 +17,7 @@ class RoleDatabase {
     }
 
     async getRole() {
-        let role = await this.db.from(tableName).select("*");
+        let role = await this.db.from(tableName).select(`id,name,access`);
         if (!role.data) {
             throw role?.error?.message;
         }
@@ -25,7 +25,7 @@ class RoleDatabase {
     }
 
     async updateRole(postBody, id) {
-        const role = await this.db.from(tableName).update(postBody).eq("id", id).select("*").maybeSingle()
+        const role = await this.db.from(tableName).update(postBody).eq("id", id).select(`id,name,access`).maybeSingle()
         if (!role.data) {
             throw role?.error?.message;
         }

@@ -3,10 +3,17 @@ var router = express.Router();
 var adminRouter = require("./admin");
 var authRouter = require("./auth");
 var roleRouter = require("./role");
+const { authenticateToken } = require("../../../middleware/auth");
 
-router.use('/', adminRouter);
+
 router.use('/auth', authRouter);
-router.use('/role', roleRouter)
+
+// router.use('/', authenticateToken, adminRouter);
+// router.use('/role', authenticateToken, roleRouter)
+
+
+router.use('/',  adminRouter);
+router.use('/role',  roleRouter)
 
 
 router.get('/', (req, res, next) => {

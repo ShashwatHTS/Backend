@@ -14,7 +14,7 @@ const logInGenerateAndStoreToken = (payload, res) => {
             .cookie('refreshToken', refreshToken, cookieOptions);
         return true;
     } catch (error) {
-        console.log("log in error", error)
+        throw user?.error?.message;
     }
 };
 
@@ -40,7 +40,6 @@ const refreshService = async (payload, req, res) => {
             return sendUnauthorized(res, 'Invalid refresh token');
         }
     } catch (error) {
-        console.error("refresh error", error);
         return sendInternalServerError(res);
     }
 };

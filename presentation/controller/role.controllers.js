@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler')
-var { supabaseInstance } = require("../supabase-db/supabaseClient");
+var { supabaseInstance } = require("../../supabase-db/index.js");
 
-const RoleDatabase = require('../infrastructure/databases/roleDatabase.js');
-const { RoleService } = require('../application/roleService');
+const RoleDatabase = require('../../infrastructure/databases/roleDatabase.js');
+const { RoleService } = require('../../application/roleService');
 
 const roleDatabase = new RoleDatabase(supabaseInstance);
 const roleService = new RoleService(roleDatabase);
